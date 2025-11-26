@@ -173,3 +173,45 @@ INNER JOIN (
         )
     ) AS agg
 ON o.id_order = agg.id_order;
+
+-- 7.1
+SELECT SUM(quantity * price) AS total_revenue
+FROM order_items
+WHERE id_order NOT IN (
+    SELECT id_order
+    FROM orders
+    WHERE status_order = 'CANCELLED'
+);
+
+-- 7.2
+SELECT ROUND(AVG(total_per_order))
+FROM (
+    SELECT SUM(quantity * price) AS total_per_order
+    FROM order_items
+    GROUP BY id_order
+);
+
+-- 7.3
+SELECT
+    c.name_category,
+    SUM(oi.quantity)
+FROM categories AS c
+INNER JOIN products AS p
+ON c.id_category = p.id_category
+INNER JOIN order_items AS oi
+ON p.id_product = oi.id_product
+GROUP BY c.id_category;
+
+-- 7.4
+SELECT
+    EXTRACT(YEAR FROM o.order_ts) AS year,
+    EXTRACT(MONTH FROM o.order_ts) AS month,
+    SUM(agg.total_per_order) AS total_revenu_per_month
+FROM orders AS o
+INNER JOIN (
+    SELECT id_order, SUM(quantity * price) AS total_per_order
+    FROM order_items
+    GROUP BY id_order
+    ) AS agg
+ON o.id_order = agg.id_order
+GROUP BY EXTRACT(YEAR FROM o.order_ts), EXTRACT(MONTH FROM o.order_ts);
