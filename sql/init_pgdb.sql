@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS categories(
-   id_categorie uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-   name_categorie VARCHAR(255) NOT NULL UNIQUE,
-   description_categorie TEXT
+   id_category uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+   name_category VARCHAR(255) NOT NULL UNIQUE,
+   description_category TEXT
 );
 
 CREATE TABLE IF NOT EXISTS products(
@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS products(
    CONSTRAINT price_strictly_positive CHECK (price > 0),
    stock INT,
    CONSTRAINT stock_positive CHECK (stock >= 0),
-   id_categorie uuid NOT NULL,
-   CONSTRAINT fk_id_categorie FOREIGN KEY(id_categorie) REFERENCES categories(id_categorie)
+   id_category uuid NOT NULL,
+   CONSTRAINT fk_id_category FOREIGN KEY(id_category) REFERENCES categories(id_category)
 );
 
 CREATE TABLE IF NOT EXISTS customers(
