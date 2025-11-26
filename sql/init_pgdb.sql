@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS products(
    CONSTRAINT fk_id_categorie FOREIGN KEY(id_categorie) REFERENCES categories(id_categorie)
 );
 
-CREATE TABLE IF NOT EXISTS clients(
-   id_client uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS customers(
+   id_customer uuid DEFAULT gen_random_uuid() PRIMARY KEY,
    first_name VARCHAR(255) NOT NULL,
    last_name VARCHAR(255) NOT NULL,
    email VARCHAR(255) NOT NULL UNIQUE,
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS orders(
    order_ts TIMESTAMP NOT NULL,
    status_order VARCHAR(255) NOT NULL,
    CONSTRAINT status_order_enum CHECK (status_order in ('PENDING', 'PAID', 'SHIPPED', 'CANCELLED')),
-   id_client uuid NOT NULL,
-   CONSTRAINT fk_id_client FOREIGN KEY(id_client) REFERENCES clients(id_client)
+   id_customer uuid NOT NULL,
+   CONSTRAINT fk_id_customer FOREIGN KEY(id_customer) REFERENCES customers(id_customer)
 );
 
 CREATE TABLE IF NOT EXISTS order_items(
