@@ -1,0 +1,37 @@
+name: tp_sql_ecommerce
+
+services:
+  pgdb:
+    image: postgres
+    container_name: pgdb
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432
+    volumes:
+      - v_pgdb:/var/lib/postgresql
+    networks:
+      - pgdb_network
+    restart: always
+
+  pgadmin:
+    depends_on:
+      - pgdb
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    env_file:
+      - ./.env
+    ports:
+      - 8080:80
+    volumes:
+      - v_pgadmin:/var/lib/pgadmin
+    networks:
+      - pgdb_network
+    restart: always
+
+volumes:
+  v_pgdb:
+  v_pgadmin:
+
+networks:
+  pgdb_network:
