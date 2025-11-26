@@ -122,19 +122,19 @@ SELECT
     SUM(agg2.total) AS total
 FROM customers as c
 INNER JOIN (
-	SELECT
-		o.id_customer,
-		agg1.total
-	FROM orders AS o
-	INNER JOIN (
-	    SELECT
-			id_order,
-	        SUM(quantity * price) AS total
-	    FROM order_items
-	    GROUP BY id_order
-	    ) AS agg1
-	ON o.id_order = agg1.id_order
-	) AS agg2
+    SELECT
+        o.id_customer,
+        agg1.total
+    FROM orders AS o
+    INNER JOIN (
+        SELECT
+            id_order,
+            SUM(quantity * price) AS total
+        FROM order_items
+        GROUP BY id_order
+        ) AS agg1
+    ON o.id_order = agg1.id_order
+    ) AS agg2
 ON c.id_customer = agg2.id_customer
 GROUP BY CONCAT_WS(' ', c.first_name, c.last_name), agg2.id_customer
 ORDER BY SUM(agg2.total) DESC
@@ -215,3 +215,43 @@ INNER JOIN (
     ) AS agg
 ON o.id_order = agg.id_order
 GROUP BY EXTRACT(YEAR FROM o.order_ts), EXTRACT(MONTH FROM o.order_ts);
+
+-- 8.1
+SELECT
+    o.id_order,
+    CONCAT_WS(' ', c.first_name, c.last_name) AS full_name,
+    o.order_ts,
+    CASE
+        WHEN o.status_order = 'PAID' THEN 'Payée'
+        WHEN o.status_order = 'SHIPPED' THEN 'Expédiée'
+        WHEN o.status_order = 'PENDING' THEN 'En attente'
+        WHEN o.status_order = 'CANCELLED' THEN 'Annulée'
+    END AS status
+FROM orders AS o
+INNER JOIN customers AS c
+ON o.id_customer = c.id_customer;
+
+-- 8.2
+SELECT
+    CONCAT_WS(' ', c.first_name, c.last_name) AS full_name,
+    agg2.total_per_customer,
+    CASE
+        WHEN agg2.total_per_customer > 300 THEN 'OR'
+        WHEN agg2.total_per_customer >= 100 THEN 'ARGENT'
+        ELSE 'BRONZE'
+    END AS segment
+FROM customers AS c
+INNER JOIN (
+    SELECT
+        o.id_customer,
+        SUM(agg1.total_per_order) AS total_per_customer
+    FROM orders AS o
+    INNER JOIN (
+        SELECT id_order, SUM(quantity * price) AS total_per_order
+        FROM order_items
+        GROUP BY id_order
+        ) AS agg1
+    ON o.id_order = agg1.id_order
+    GROUP BY o.id_customer
+    ) AS agg2
+ON c.id_customer = agg2.id_customer;
