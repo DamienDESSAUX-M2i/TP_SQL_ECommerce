@@ -255,3 +255,82 @@ INNER JOIN (
     GROUP BY o.id_customer
     ) AS agg2
 ON c.id_customer = agg2.id_customer;
+
+-- 9.1
+SELECT
+    CONCAT_WS(' ', c.first_name, c.last_name) As full_name,
+    agg.nb_orders
+FROM customers AS c
+INNER JOIN (
+    SELECT
+        id_customer,
+        COUNT(id_order) AS nb_orders
+    FROM orders
+    GROUP BY id_order
+    ORDER BY nb_orders DESC
+    LIMIT 5
+    ) AS agg
+ON c.id_customer = agg.id_customer;
+
+-- 9.2
+SELECT
+    CONCAT_WS(' ', c.first_name, c.last_name) As full_name,
+    agg2.total_per_customer
+FROM customers AS c
+INNER JOIN (
+    SELECT
+        o.id_customer,
+        SUM(total_per_order) AS total_per_customer
+    FROM orders AS o
+    INNER JOIN (
+        SELECT
+            id_order,
+            SUM(quantity * price) AS total_per_order
+        FROM order_items
+        GROUP BY id_order
+        ) AS agg1
+    ON o.id_order = agg1.id_order
+    GROUP BY o.id_customer
+    ORDER BY total_per_customer DESC
+    LIMIT 5
+    ) AS agg2
+ON c.id_customer = agg2.id_customer;
+
+-- 9.3
+SELECT
+    c.name_category,
+    agg2.total_per_category
+FROM categories AS c
+INNER JOIN (
+    SELECT
+        p.id_category,
+        SUM(agg1.total_per_product) AS total_per_category
+    FROM products AS p
+    INNER JOIN (
+        SELECT
+            id_product,
+            SUM(quantity * price) AS total_per_product
+        FROM order_items
+        GROUP BY id_product
+        ) AS agg1
+    ON p.id_product = agg1.id_product
+    GROUP BY p.id_category
+    ORDER BY total_per_category DESC
+    LIMIT 3
+    ) AS agg2
+ON c.id_category = agg2.id_category;
+
+-- 9.4
+SELECT
+    p.name_product,
+    agg.total_per_product
+FROM products AS p
+INNER JOIN (
+    SELECT
+        id_product,
+        SUM(quantity * price) AS total_per_product
+    FROM order_items
+    GROUP BY id_product
+    HAVING SUM(quantity * price) < 20
+    ) AS agg
+ON p.id_product = agg.id_product;
