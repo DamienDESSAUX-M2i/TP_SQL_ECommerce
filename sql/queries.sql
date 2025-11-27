@@ -351,10 +351,16 @@ ON c.id_customer = agg.id_customer
 WHERE nb_orders = 1;
 
 -- 9.6
-SELECT p.name_product, agg2.status_order
+SELECT
+    p.name_product,
+    agg2.status_order,
+    agg2.total_lost
 FROM products AS p
 INNER JOIN (
-    SELECT oi.id_product, agg1.status_order
+    SELECT
+        oi.id_product,
+        agg1.status_order,
+        oi.quantity * oi.price AS total_lost
     FROM order_items AS oi
     INNER JOIN (
         SELECT id_order, status_order
