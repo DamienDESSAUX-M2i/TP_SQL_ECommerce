@@ -334,3 +334,33 @@ INNER JOIN (
     HAVING SUM(quantity * price) < 20
     ) AS agg
 ON p.id_product = agg.id_product;
+
+-- 9.5
+SELECT
+    CONCAT_WS(' ', c.first_name, c.last_name) AS full_name,
+    agg.nb_orders
+FROM customers AS c
+INNER JOIN (
+    SELECT
+        id_customer,
+        COUNT(id_order) AS nb_orders
+    FROM orders
+    GROUP BY id_customer
+    ) AS agg
+ON c.id_customer = agg.id_customer
+WHERE nb_orders = 1;
+
+-- 9.6
+SELECT p.name_product, agg2.status_order
+FROM products AS p
+INNER JOIN (
+    SELECT oi.id_product, agg1.status_order
+    FROM order_items AS oi
+    INNER JOIN (
+        SELECT id_order, status_order
+        FROM orders
+        WHERE status_order = 'CANCELLED'
+        ) AS agg1
+    ON oi.id_order = agg1.id_order
+    ) AS agg2
+ON p.id_product = agg2.id_product;
