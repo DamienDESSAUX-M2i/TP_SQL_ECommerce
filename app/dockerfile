@@ -3,6 +3,8 @@ FROM python:latest
 WORKDIR /app
 
 RUN pip install psycopg[binary]
+# tzdata pour le package zoneinfo
+RUN pip install tzdata
 
 COPY . .
 
