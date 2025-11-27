@@ -39,9 +39,9 @@ Un rapport horodaté est créé dans le dossier `TP_SQL_ECommerce/reports/`. Pou
 
 Le MCD et le MDL sont créés avec le logiciel *Looping*.
 
-![image](./mcd.jpg)
+![image](./schemas/mcd.jpg)
 
-![image](./mld.jpg)
+![image](./schemas/mld.jpg)
 
 ## Création des tables et insertions du jeu de données
 
