@@ -41,7 +41,7 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - ~/Documents:/app/reports
+      - ./reports:/app/reports
     networks:
       - app_network
     restart: always
