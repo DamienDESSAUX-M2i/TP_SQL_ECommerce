@@ -1,0 +1,11 @@
+FROM python:latest
+
+WORKDIR /app
+
+RUN pip install psycopg[binary]
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["tail", "-f", "/dev/null"]

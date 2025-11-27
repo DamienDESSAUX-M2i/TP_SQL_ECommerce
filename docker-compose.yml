@@ -10,8 +10,10 @@ services:
       - 5432:5432
     volumes:
       - v_pgdb:/var/lib/postgresql
+      - ./sql_init:/docker-entrypoint-initdb.d
     networks:
       - pgdb_network
+      - app_network
     restart: always
 
   pgadmin:
@@ -29,9 +31,25 @@ services:
       - pgdb_network
     restart: always
 
+  app:
+    depends_on:
+      - pgdb
+    build: ./app
+    container_name: app
+    env_file:
+      - ./.env
+    ports:
+      - 5000:5000
+    volumes:
+      - ~/Documents:/app/reports
+    networks:
+      - app_network
+    restart: always
+
 volumes:
   v_pgdb:
   v_pgadmin:
 
 networks:
   pgdb_network:
+  app_network:

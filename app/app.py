@@ -1,9 +1,16 @@
 import datetime
+import os
 from pathlib import Path
 
 import psycopg
 
-DSN = "dbname=pgdb user=admin password=admin host=pgdb port=5432"
+dbname = os.getenv("POSTGRES_DB")
+user = os.getenv("POSTGRES_USER")
+password = os.getenv("POSTGRES_PASSWORD")
+host = "pgdb"
+port = "5432"
+
+DSN = f"postgres://{user}:{password}@{host}:{port}/{dbname}"
 
 
 def init_db() -> None:
